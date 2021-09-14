@@ -18,6 +18,7 @@ import (
 	"golang.org/x/xerrors"
 )
 
+// リファクタリング前
 func main() {
 	router := mux.NewRouter()
 

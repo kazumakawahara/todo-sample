@@ -8,6 +8,7 @@ VALUES
 INSERT INTO  priorities
     (id, priority)
 VALUES
-    (1, "低"),
-    (2, "中"),
-    (3, "高");
+    (1, ""),
+    (2, "低"),
+    (3, "中"),
+    (4, "高");
