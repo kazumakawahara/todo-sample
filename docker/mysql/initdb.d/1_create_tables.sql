@@ -4,16 +4,16 @@ USE test_db;
 
 CREATE TABLE statuses
 (
-    id     INT         NOT NULL AUTO_INCREMENT,
-    status VARCHAR(10) NOT NULL,
-    PRIMARY KEY (id)
+  id     INT         NOT NULL AUTO_INCREMENT,
+  status VARCHAR(10) NOT NULL,
+  PRIMARY KEY (id)
 );
 
 CREATE TABLE priorities
 (
-    id       INT     NOT NULL AUTO_INCREMENT,
-    priority CHAR(1) NOT NULL,
-    PRIMARY KEY (id)
+  id       INT     NOT NULL AUTO_INCREMENT,
+  priority CHAR(1) NOT NULL,
+  PRIMARY KEY (id)
 );
 
 CREATE TABLE todos
@@ -23,8 +23,8 @@ CREATE TABLE todos
   implementation_date DATE        NOT NULL,
   due_date            DATE        NOT NULL,
   status_id           INT         NOT NULL,
-  priority_id         INT  DEFAULT NULL,
-  memo                TEXT DEFAULT NULL,
+  priority_id         INT         NOT NULL,
+  memo                TEXT        NOT NULL,
   PRIMARY KEY (id),
 
   FOREIGN KEY fk_status_id (status_id)
