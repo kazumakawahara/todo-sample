@@ -9,6 +9,7 @@ import (
 
 type TodoUsecase interface {
 	CreateTodo(in *input.Todo) (*output.Todo, error)
+	FetchTodo(id int) (*output.Todo, error)
 }
 
 type todoUsecase struct {
@@ -61,6 +62,28 @@ func (u *todoUsecase) CreateTodo(in *input.Todo) (*output.Todo, error) {
 	}
 
 	todoDm, err = u.todoRepository.FetchTodoByID(idVo)
+	if err != nil {
+		return nil, err
+	}
+
+	return &output.Todo{
+		ID:                 todoDm.ID().Value(),
+		Title:              todoDm.Title().Value(),
+		ImplementationDate: todoDm.ImplementationDate().Value(),
+		DueDate:            todoDm.DueDate().Value(),
+		StatusID:           todoDm.Status().Value(),
+		PriorityID:         todoDm.Priority().Value(),
+		Memo:               todoDm.Memo().Value(),
+	}, nil
+}
+
+func (u *todoUsecase) FetchTodo(id int) (*output.Todo, error) {
+	idVo, err := tododomain.NewID(id)
+	if err != nil {
+		return nil, apperrors.InvalidParameter
+	}
+
+	todoDm, err := u.todoRepository.FetchTodoByID(idVo)
 	if err != nil {
 		return nil, err
 	}
