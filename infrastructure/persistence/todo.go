@@ -2,7 +2,6 @@ package persistence
 
 import (
 	"database/sql"
-
 	"golang.org/x/xerrors"
 
 	"github.com/kazumakawahara/todo-sample/apperrors"
@@ -13,6 +12,10 @@ import (
 
 type todoRepository struct {
 	*rdb.MySQLHandler
+}
+
+func (r *todoRepository) UpdateTodo(id tododomain.ID) (*tododomain.Todo, error) {
+	panic("implement me")
 }
 
 func NewTodoRepository(mysqlHandler *rdb.MySQLHandler) *todoRepository {
@@ -102,4 +105,56 @@ func (r *todoRepository) FetchTodoByID(id tododomain.ID) (*tododomain.Todo, erro
 	)
 
 	return todoDm, nil
+}
+
+func (r *todoRepository) FetchTodos() ([]*tododomain.Todo, error) {
+	fetchQuery := `
+        SELECT
+            todos.id                  id,
+            todos.title               title,
+            todos.implementation_date implementation_date,
+            todos.due_date            due_date,
+            todos.status_id           status_id,
+            todos.priority_id         priority_id,
+            todos.memo                memo
+        FROM
+            todos
+        INNER JOIN
+            statuses
+        ON
+            statuses.id = todos.status_id
+        INNER JOIN
+            priorities
+        ON
+            priorities.id = todos.priority_id`
+
+	rows, err := r.Conn.Queryx(fetchQuery)
+	if err != nil {
+		return nil, apperrors.InternalServerError
+	}
+
+	var todosDto []datasource.Todo
+	for rows.Next() {
+		var todoDto datasource.Todo
+		if err := rows.StructScan(&todoDto); err != nil {
+			return nil, apperrors.InternalServerError
+		}
+
+		todosDto = append(todosDto, todoDto)
+	}
+
+	todoDms := make([]*tododomain.Todo, len(todosDto))
+	for i, todoDto := range todosDto {
+		todoDms[i] =  tododomain.NewTodo(
+			tododomain.ID(todoDto.ID),
+			tododomain.Title(todoDto.Title),
+			tododomain.ImplementationDate(todoDto.ImplementationDate),
+			tododomain.DueDate(todoDto.DueDate),
+			tododomain.Status(todoDto.StatusID),
+			tododomain.Priority(todoDto.PriorityID),
+			tododomain.Memo(todoDto.Memo),
+		)
+	}
+
+	return todoDms, nil
 }
