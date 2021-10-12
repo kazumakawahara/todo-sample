@@ -52,5 +52,15 @@ func (h *todoHandler) FetchTodo(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	presenter.JSON(w, http.StatusCreated, out)
+	presenter.JSON(w, http.StatusOK, out)
+}
+
+func (h *todoHandler) FetchTodos(w http.ResponseWriter, r *http.Request) {
+	out, err := h.todoUsecase.FetchTodos()
+	if err != nil {
+		presenter.ErrorJSON(w, err)
+		return
+	}
+
+	presenter.JSON(w, http.StatusOK, out)
 }

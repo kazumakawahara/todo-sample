@@ -10,6 +10,7 @@ import (
 type TodoUsecase interface {
 	CreateTodo(in *input.Todo) (*output.Todo, error)
 	FetchTodo(id int) (*output.Todo, error)
+	FetchTodos() ([]*output.Todo, error)
 }
 
 type todoUsecase struct {
@@ -97,4 +98,26 @@ func (u *todoUsecase) FetchTodo(id int) (*output.Todo, error) {
 		PriorityID:         todoDm.Priority().Value(),
 		Memo:               todoDm.Memo().Value(),
 	}, nil
+}
+
+func (u *todoUsecase) FetchTodos() ([]*output.Todo, error) {
+	todosDm, err := u.todoRepository.FetchTodos()
+	if err != nil {
+		return nil, err
+	}
+
+	todosDto := make([]*output.Todo,len(todosDm))
+	for i, todoDm := range todosDm {
+		todosDto[i] = &output.Todo{
+			ID:                 todoDm.ID().Value(),
+			Title:              todoDm.Title().Value(),
+			ImplementationDate: todoDm.ImplementationDate().Value(),
+			DueDate:            todoDm.DueDate().Value(),
+			StatusID:           todoDm.Status().Value(),
+			PriorityID:         todoDm.Priority().Value(),
+			Memo:               todoDm.Memo().Value(),
+		}
+	}
+
+	return todosDto, nil
 }

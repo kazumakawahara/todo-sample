@@ -33,6 +33,7 @@ func Run() error {
 	router := mux.NewRouter()
 	router.HandleFunc("/todos", todoHandler.CreateTodo).Methods(http.MethodPost)
 	router.HandleFunc("/todos/{id:[0-9]+}", todoHandler.FetchTodo).Methods(http.MethodGet)
+	router.HandleFunc("/todos", todoHandler.FetchTodos).Methods(http.MethodGet)
 
 	// Apply cors middleware to top-level router.
 	srv := &http.Server{
