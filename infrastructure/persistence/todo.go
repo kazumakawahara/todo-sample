@@ -2,6 +2,7 @@ package persistence
 
 import (
 	"database/sql"
+
 	"golang.org/x/xerrors"
 
 	"github.com/kazumakawahara/todo-sample/apperrors"
@@ -12,10 +13,6 @@ import (
 
 type todoRepository struct {
 	*rdb.MySQLHandler
-}
-
-func (r *todoRepository) UpdateTodo(id tododomain.ID) (*tododomain.Todo, error) {
-	panic("implement me")
 }
 
 func NewTodoRepository(mysqlHandler *rdb.MySQLHandler) *todoRepository {
@@ -145,7 +142,7 @@ func (r *todoRepository) FetchTodos() ([]*tododomain.Todo, error) {
 
 	todoDms := make([]*tododomain.Todo, len(todosDto))
 	for i, todoDto := range todosDto {
-		todoDms[i] =  tododomain.NewTodo(
+		todoDms[i] = tododomain.NewTodo(
 			tododomain.ID(todoDto.ID),
 			tododomain.Title(todoDto.Title),
 			tododomain.ImplementationDate(todoDto.ImplementationDate),
