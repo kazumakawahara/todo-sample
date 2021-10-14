@@ -64,3 +64,27 @@ func (h *todoHandler) FetchTodos(w http.ResponseWriter, r *http.Request) {
 
 	presenter.JSON(w, http.StatusOK, out)
 }
+
+func (h *todoHandler) UpdateTodo(w http.ResponseWriter, r *http.Request) {
+	todoID, err := strconv.Atoi(mux.Vars(r)["id"])
+	if err != nil {
+		presenter.ErrorJSON(w, apperrors.InvalidParameter)
+		return
+	}
+
+	in := input.Todo{
+		ID: todoID,
+	}
+	if err := json.NewDecoder(r.Body).Decode(&in); err != nil {
+		presenter.ErrorJSON(w, apperrors.InvalidParameter)
+		return
+	}
+
+	out, err := h.todoUsecase.UpdateTodo(&in)
+	if err != nil {
+		presenter.ErrorJSON(w, err)
+		return
+	}
+
+	presenter.JSON(w, http.StatusOK, out)
+}

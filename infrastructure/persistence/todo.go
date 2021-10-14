@@ -155,3 +155,32 @@ func (r *todoRepository) FetchTodos() ([]*tododomain.Todo, error) {
 
 	return todoDms, nil
 }
+
+func (r *todoRepository) UpdateTodo(todo *tododomain.Todo) (tododomain.ID, error) {
+	updateQuery := `
+        UPDATE
+            todos
+        SET 
+            title = ?,
+            implementation_date = ?,
+            due_date = ?,
+            status_id = ?,
+            priority_id = ?,
+            memo = ?
+        WHERE
+            id = ?`
+
+	if _, err := r.Conn.Exec(
+		updateQuery,
+		todo.Title().Value(),
+		todo.ImplementationDate().Value(),
+		todo.DueDate().Value(),
+		todo.Status().Value(),
+		todo.Priority().Value(),
+		todo.Memo().Value(),
+		todo.ID().Value(),
+	); err != nil {
+		return 0, apperrors.InternalServerError
+	}
+	return 0, nil
+}

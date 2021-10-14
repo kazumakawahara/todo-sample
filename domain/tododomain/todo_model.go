@@ -15,7 +15,8 @@ func NewTodoWhenUnCreated(
 	implementationDate ImplementationDate,
 	dueDate DueDate,
 	priority Priority,
-	memo Memo) *Todo {
+	memo Memo,
+) *Todo {
 	return &Todo{
 		title:              title,
 		implementationDate: implementationDate,
