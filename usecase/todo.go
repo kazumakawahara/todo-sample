@@ -12,6 +12,7 @@ type TodoUsecase interface {
 	FetchTodo(id int) (*output.Todo, error)
 	FetchTodos() ([]*output.Todo, error)
 	UpdateTodo(in *input.Todo) (*output.Todo, error)
+	DeleteTodo(id int) error
 }
 
 type todoUsecase struct {
@@ -125,7 +126,7 @@ func (u *todoUsecase) FetchTodos() ([]*output.Todo, error) {
 
 func (u *todoUsecase) UpdateTodo(in *input.Todo) (*output.Todo, error) {
 	idVo, err := tododomain.NewID(in.ID)
-	if err != nil{
+	if err != nil {
 		return nil, apperrors.InvalidParameter
 	}
 
@@ -145,10 +146,9 @@ func (u *todoUsecase) UpdateTodo(in *input.Todo) (*output.Todo, error) {
 	}
 
 	statusVo, err := tododomain.NewStatus(in.StatusID)
-	if err != nil{
+	if err != nil {
 		return nil, apperrors.InvalidParameter
 	}
-
 
 	priorityVo, err := tododomain.NewPriority(in.PriorityID)
 	if err != nil {
@@ -183,4 +183,17 @@ func (u *todoUsecase) UpdateTodo(in *input.Todo) (*output.Todo, error) {
 		PriorityID:         todoDm.Priority().Value(),
 		Memo:               todoDm.Memo().Value(),
 	}, nil
+}
+
+func (u *todoUsecase) DeleteTodo(id int) error {
+	idVo, err := tododomain.NewID(id)
+	if err != nil {
+		return apperrors.InvalidParameter
+	}
+
+	if err = u.todoRepository.DeleteTodo(idVo); err != nil {
+		return err
+	}
+
+	return nil
 }

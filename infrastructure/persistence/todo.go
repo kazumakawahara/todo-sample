@@ -184,3 +184,20 @@ func (r *todoRepository) UpdateTodo(todo *tododomain.Todo) (tododomain.ID, error
 	}
 	return 0, nil
 }
+
+func (r *todoRepository) DeleteTodo(id tododomain.ID) error {
+	deleteQuery := `
+        DELETE FROM
+            todos
+        WHERE
+            id = ?`
+
+	if _, err := r.Conn.Exec(
+		deleteQuery,
+		id.Value(),
+	); err != nil {
+		return apperrors.InternalServerError
+	}
+
+	return nil
+}
