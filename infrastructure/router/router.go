@@ -35,6 +35,7 @@ func Run() error {
 	router.HandleFunc("/todos/{id:[0-9]+}", todoHandler.FetchTodo).Methods(http.MethodGet)
 	router.HandleFunc("/todos", todoHandler.FetchTodos).Methods(http.MethodGet)
 	router.HandleFunc("/todos/{id:[0-9]+}", todoHandler.UpdateTodo).Methods(http.MethodPut)
+	router.HandleFunc("/todos/{id:[0-9]+}", todoHandler.DeleteTodo).Methods(http.MethodDelete)
 
 	// Apply cors middleware to top-level router.
 	srv := &http.Server{

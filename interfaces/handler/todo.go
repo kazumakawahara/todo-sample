@@ -11,6 +11,7 @@ import (
 	"github.com/kazumakawahara/todo-sample/interfaces/presenter"
 	"github.com/kazumakawahara/todo-sample/usecase"
 	"github.com/kazumakawahara/todo-sample/usecase/input"
+	"github.com/kazumakawahara/todo-sample/usecase/output"
 )
 
 type todoHandler struct {
@@ -87,4 +88,21 @@ func (h *todoHandler) UpdateTodo(w http.ResponseWriter, r *http.Request) {
 	}
 
 	presenter.JSON(w, http.StatusOK, out)
+}
+
+func (h *todoHandler) DeleteTodo(w http.ResponseWriter, r *http.Request) {
+	todoID, err := strconv.Atoi(mux.Vars(r)["id"])
+	if err != nil {
+		presenter.ErrorJSON(w, apperrors.InvalidParameter)
+		return
+	}
+
+	if err := h.todoUsecase.DeleteTodo(todoID); err != nil {
+		presenter.ErrorJSON(w, err)
+		return
+	}
+
+	resp := output.DeleteMessage{Message: "削除しました。"}
+
+	presenter.JSON(w, http.StatusOK, resp)
 }

@@ -11,3 +11,7 @@ type Todo struct {
 	PriorityID         uint      `json:"priorityID"`
 	Memo               string    `json:"memo"`
 }
+
+type DeleteMessage struct {
+	Message string `json:"message"`
+}
